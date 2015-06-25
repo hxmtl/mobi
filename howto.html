@@ -1,0 +1,74 @@
+<html lang="en" ng-app="sidenavDemo1">
+
+<head>
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/0.7.1/angular-material.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//rawgit.com/jtrussell/Snap.js/master/snap.css">
+    <link rel="stylesheet" href="//rawgit.com/jtrussell/angular-snap.js-bower/master/angular-snap.css">
+</head>
+
+<body layout="column" ng-controller="AppCtrl">
+    <div ng-controller="AppCtrl" layout="column" layout-fill>
+
+        <md-toolbar>
+            <h2 class="md-toolbar-tools">
+        <span  ng-click="toggleLeft()"> <i class="fa fa-bars"></i>
+        </span>
+      </h2>
+        </md-toolbar>
+        <section layout="row" flex>
+            <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
+                <md-toolbar class="md-theme-indigo" ng-click="toggleLeft()">
+                    <h1 class="md-toolbar-tools">
+            <center>
+              <img ng-src="https://lh3.ggpht.com/IYhUjrjXRb5uA8DkwAU_eLaGXB23mIA-OMOUw_5EHGgvuZXu6QF_pxn8Hl2lo8mxM20=w300-rw" width="20%" style="float:center" />
+            </center>
+          </h1>
+                </md-toolbar>
+                <md-content class="md-padding" ng-controller="LeftCtrl">
+                    <md-button ng-click="close()" class="md-primary" hide-gt-md>Close Sidenav Left</md-button>
+                    <p hide-md show-gt-md>
+                        This sidenav is locked open on your device. To go back to the default behavior, narrow your display.
+                    </p>
+                </md-content>
+            </md-sidenav>
+            <md-content flex class="md-padding">
+                <div layout-align="center center">
+                    <div ng-controller="ListCtrl" >
+
+                        <md-content style="height: 100%;">
+                            <md-list>
+                                <md-item ng-repeat="item in todos">
+                                    <md-item-content>
+                                        <div class="md-tile-left">
+                                            <img ng-src="{{item.face}}" alt="{{item.who}}" class="face">
+                                        </div>
+                                        <div class="md-tile-content">
+                                            <h3>{{item.what}}</h3>
+                                            <h4>{{item.who}}</h4>
+                                            <p>
+                                                {{item.notes}}
+                                            </p>
+                                        </div>
+                                    </md-item-content>
+                                    
+                                </md-item>
+                            </md-list>
+                        </md-content>
+                    </div>                    
+                </div>
+            </md-content>
+
+        </section>
+    </div>
+
+    <!-- Angular Material Dependencies -->
+
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular-animate.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular-aria.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angular_material/0.7.1/angular-material.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

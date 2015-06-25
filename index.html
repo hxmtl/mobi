@@ -1,0 +1,241 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <title>Company Directory</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-route.min.js"></script>
+    <script>
+        var myApp = angular.module('myApp', ['ngRoute'])
+
+        //ng-route config
+        .config(function ($routeProvider, $locationProvider) {
+            $routeProvider
+              .when('/home', {
+                  templateUrl: 'default.html',
+              })
+              .when('/contact-info/:contact_index', {
+                  templateUrl: 'contact_info.html',
+                  controller: 'contactInfoCtrl'
+              })
+              .when('/add', {
+                  templateUrl: 'contact_form.html',
+                  controller: 'addContactCtrl'
+              })
+              .when('/edit/:contact_index', {
+                  templateUrl: 'contact_form.html',
+                  controller: 'editContactCtrl'
+              })
+              .otherwise({ redirectTo: '/home' });
+        })
+
+        // controllers
+        .controller('navCtrl', function ($scope) {
+            $scope.nav = {
+                navItems: ['home', 'add'],
+                selectedIndex: 0,
+                navClick: function ($index) {
+                    $scope.nav.selectedIndex = $index;
+                }
+            };
+        })
+
+        .controller('homeCtrl', function ($scope, ContactService) {
+            $scope.contacts = ContactService.getContacts();
+
+            $scope.removeContact = function (item) {
+                var index = $scope.contacts.indexOf(item);
+                $scope.contacts.splice(index, 1);
+                $scope.removed = 'Contact successfully removed.';
+            };
+
+        })
+
+        .controller('contactInfoCtrl', function ($scope, $routeParams) {
+            var index = $routeParams.contact_index;
+            $scope.currentContact = $scope.contacts[index];
+        })
+
+        .controller('addContactCtrl', function ($scope, $location) {
+            //needed to show the correct button on the contact form
+            $scope.path = $location.path();
+
+            $scope.addContact = function () {
+                var contact = $scope.currentContact;
+                contact.id = $scope.contacts.length;
+                $scope.contacts.push(contact);
+            };
+
+        })
+
+        .controller('editContactCtrl', function ($scope, $routeParams) {
+            $scope.index = $routeParams.contact_index;
+            $scope.currentContact = $scope.contacts[$scope.index];
+        })
+
+        // directives
+        .directive('contact', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: 'contact.html'
+            }
+        })
+
+        // services
+        .factory('ContactService', [function () {
+            var factory = {};
+
+            factory.getContacts = function () {
+                return contactList;
+            }
+
+            // contact list, usually would be a separate database
+            var contactList = [
+              { id: 0, name: 'Ned Stark', email: 'ned@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Winter is coming.' },
+              { id: 1, name: 'Theon Greyjoy', email: 'tgreyjoy@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Reluctant to pay iron price.' },
+              { id: 2, name: 'Samwell Tarly', email: 'starly@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Loyal brother of the watch.' },
+              { id: 3, name: 'Jon Snow', email: 'jsnow@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Knows nothing.' },
+              { id: 4, name: 'Arya Stark', email: 'waterdancer@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Has a list of names.' },
+              { id: 5, name: 'Jora Mormont', email: 'khaleesifan100@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Lost in the friend-zone.' },
+              { id: 6, name: 'Tyrion Lannister', email: 'tyrion@lannister.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Currently drunk.' },
+              { id: 7, name: 'Stannis Baratheon', email: 'onetrueking@dragonstone.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Nobody expects the Stannish inquisition.' },
+              { id: 8, name: 'Hodor', email: 'hodor@hodor.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Hodor? Hodor... Hodor!' },
+              { id: 9, name: 'Margaery Tyrell', email: 'mtyrell@highgarden.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Keeper of kings.' },
+              { id: 10, name: 'Brienne of Tarth', email: 'oathkeeper@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not cross her.' },
+              { id: 11, name: 'Petyr Baelish', email: 'petyr@baelishindustries.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not trust anyone.' },
+              { id: 12, name: 'Gaurav Gaikwad', email: 'ggaikwad@neogov.net', phone: '3097505556', url: 'www.google.com', notes: 'I am a new HR Cloud employee' },
+              { id: 13, name: 'Sergio Ramos', email: 'tgreyjoy@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Reluctant to pay iron price.' },
+            ];
+
+            return factory;
+        }]);
+
+
+    </script>
+</head>
+<body>
+    <br />
+    <img src="http://hrcloud.com/wp-content/uploads/2013/10/hr-cloud-128.png" style="display: inline;" /> 
+    <h1 style="display: inline;">Company Directory</h1><br/><br />
+    <div class="global-wrapper" ng-app="myApp">
+        <!-- nav section -->
+        <nav class="navbar navbar-default" ng-controller="navCtrl">
+            <div class="container-fluid">
+                <div class="nav-header">
+                    <a href="#" class="navbar-brand hidden-xs">Company Directory</a>
+                    <ul class="nav navbar-nav">
+                        <li ng-repeat="navLink in nav.navItems" ng-class="{active : $index === nav.selectedIndex}">
+                            <a class="text-center" ng-click="nav.navClick($index)" ng-href="#/{{navLink}}">{{navLink}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row panel panel-primary" ng-controller="homeCtrl">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Conatact List</h2>
+                </div>
+
+
+                <!--     contact list   	 -->
+                <div class="col-xs-5 panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <h4>Contacts:</h4>
+                            <input class="form-control" placeholder="Seach Your Contacts" type="text" ng-model="searchText" />
+                            <contact class="list-group-item" ng-repeat="contact in contacts | orderBy: 'name' | filter: searchText "></contact>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--   ng-view below       -->
+                <div class="col-xs-7">
+                    <div class="list-group panel-body">
+                        <div ng-view=ng-view></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--  html templates used by angular, usually in separate files -->
+        <script type="text/ng-template" id="default.html">
+            <div class="alert alert-success text-center" ng-class="{hidden : !removed}"> {{removed}}</div>
+            <div class="list-group-item text-center">Please select a contact to view</div>
+        </script>
+
+        <!-- 	template for displaying a contacts info	 -->
+        <script type="text/ng-template" id="contact_info.html">
+            <div class="list-group-item">
+                <h3 class="text-center">{{currentContact.name}}</h3>
+                <p>email: <a ng-href="{{currentContact.email}}">{{currentContact.email}}</a></p>
+                <p>phone: {{currentContact.phone}}</p>
+                <p>url: <a ng-href="{{currentContact.url}}">{{currentContact.url}}</a></p>
+                <p>Notes:</p>
+                <p class="well well-lg">{{currentContact.notes}}</p>
+
+                <a ng-href="#/edit/{{contacts.indexOf(currentContact)}}">
+                    <button class="btn btn-default">
+                        <span class="glyphicon glyphicon-pencil"></span><span>  Edit</span>
+                    </button>
+                </a>
+
+                <a href="#/">
+                    <button class="btn btn-default" ng-click="removeContact(currentContact)">
+                        <span class="glyphicon glyphicon-remove"></span><span>  Remove</span>
+                    </button>
+                </a>
+            </div>
+        </script>
+
+        <!--   template used for both adding a new contact and editing an existing contact   -->
+        <script type="text/ng-template" id="contact_form.html">
+            <div ng-controller="addContactCtrl">
+                <div class="list-group-item">
+
+                    <div class="form-group">
+
+                        <p><label for="name">name: </label> <input id="name" class="form-control" type="text" ng-model="currentContact.name" /> </p>
+                        <p><label for="email">email:</label> <input id="email" class="form-control" type="text" ng-model="currentContact.email" /> </p>
+                        <p><label for="phone">phone:</label> <input id="phone" class="form-control" type="text" ng-model="currentContact.phone" /> </p>
+                        <p><label for="url">url:</label> <input id="url" class="form-control" type="text" ng-model="currentContact.url" /> </p>
+                        <p><label for="notes">notes:</label></p>
+                        <textarea class="form-control" id="notes" rows="3" ng-model="currentContact.notes"></textarea>
+                    </div>
+
+                    <a ng-if="path === '/add' " ng-href="#/contact-info/{{ contacts.length - 1 }}" ng-click="addContact()">
+                        <button class="btn btn-default">
+                            <span class="glyphicon glyphicon-ok"></span>
+                            <span> Add</span>
+                        </button>
+                    </a>
+
+                    <a ng-if="path !== '/add'" ng-href="#/contact-info/{{index}}">
+                        <button class="btn btn-default">
+                            <span class="glyphicon glyphicon-ok"></span>
+                            <span> Save Edits</span>
+                        </button>
+                    </a>
+
+                    <a href="#/">
+                        <button class="btn btn-default">
+                            <span class="glyphicon glyphicon-remove"></span><span>  Cancel</span>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </script>
+
+        <!--      template used for the ng-repeat in the contact list        -->
+        <script type="text/ng-template" id="contact.html">
+            <a ng-href="#/contact-info/{{contacts.indexOf(contact)}}">
+                {{contact.name}}
+            </a>
+        </script>
+    </div>
+</body>
+</html>
